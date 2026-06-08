@@ -13,6 +13,10 @@ interface NotesHttpResponse{
 
 export const fetchNotes = async () => {
     const res = await axios.get<NotesHttpResponse>("/notes", {
+        params: {
+            page: 1,
+            perPage: 12
+        },
         headers:{
             Authorization: `Bearer ${myToken}`
         }

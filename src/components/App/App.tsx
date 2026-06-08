@@ -9,11 +9,15 @@ import type { Note } from '../../types/note'
 import Modal from '../Modal/Modal'
 import NoteForm from '../NoteForm/NoteForm'
 
+
+
 function App() {
 const {data, isLoading} = useQuery<Note[]>({
   queryKey: ["notes"],
   queryFn: fetchNotes,
 });
+
+const totalPages = data?.total_pages ?? 0;
 
 const [isModalOpen, setIsModalOpen] = useState(false);
 const openModal = () => setIsModalOpen(true);
@@ -23,7 +27,7 @@ const closeModal = () => setIsModalOpen(false);
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox/>
-        <Pagination/>
+        {totalPages>1 && (<Pagination />)}
         <button className='css.button' onClick={openModal}>Create note +</button>
       </header>
       {data && !isLoading && <NoteList notes={data}/>}
