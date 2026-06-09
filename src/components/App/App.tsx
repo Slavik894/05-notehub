@@ -11,10 +11,16 @@ import NoteForm from '../NoteForm/NoteForm'
 function App() {
 
 const [currentPage, setCurrentPage] = useState(1);
+const [searchText, setSearchText] = useState("")
+
+const handleSearch = (value: string) =>{
+  setSearchText(value);
+  setCurrentPage(1);
+}
 
 const {data, isLoading} = useQuery<NotesHttpResponse>({
-  queryKey: ["notes", currentPage],
-  queryFn: ()=> fetchNotes(currentPage),
+  queryKey: ["notes", currentPage, searchText],
+  queryFn: ()=> fetchNotes(currentPage, searchText),
   placeholderData: keepPreviousData
 });
 
@@ -28,14 +34,14 @@ const closeModal = () => setIsModalOpen(false);
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox/>
+        <SearchBox onSearch={handleSearch}/>
         {totalPages>1 && (<Pagination 
                           totalPages={totalPages}
                           currentPage={currentPage}
                           onPageChange={setCurrentPage}
 
                           />)}
-        <button className='css.button' onClick={openModal}>Create note +</button>
+        <button className={css.button} onClick={openModal}>Create note +</button>
       </header>
       {data && !isLoading && <NoteList notes={notes}/>}
       {isModalOpen &&(

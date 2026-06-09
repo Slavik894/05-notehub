@@ -11,11 +11,12 @@ export interface NotesHttpResponse{
     totalPages?: number;
 }
 
-export const fetchNotes = async (page: number) => {
+export const fetchNotes = async (page: number, searchText: string) => {
     const res = await axios.get<NotesHttpResponse>("/notes", {
         params: {
             page: page,
-            perPage: 12
+            perPage: 12,
+            search: searchText
         },
         headers:{
             Authorization: `Bearer ${myToken}`
