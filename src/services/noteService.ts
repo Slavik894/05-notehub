@@ -5,23 +5,23 @@ axios.defaults.baseURL = "https://notehub-public.goit.study/api";
 
 const myToken = import.meta.env.VITE_NOTEHUB_TOKEN
 
-interface NotesHttpResponse{
+export interface NotesHttpResponse{
     notes: Note[];
     page?: number;
     totalPages?: number;
 }
 
-export const fetchNotes = async () => {
+export const fetchNotes = async (page: number) => {
     const res = await axios.get<NotesHttpResponse>("/notes", {
         params: {
-            page: 1,
+            page: page,
             perPage: 12
         },
         headers:{
             Authorization: `Bearer ${myToken}`
         }
     });
-    return res.data.notes;
+    return res.data;
 };
 
 interface NewNote{

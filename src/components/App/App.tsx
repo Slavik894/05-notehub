@@ -1,23 +1,25 @@
 import { useState } from 'react'
 import SearchBox from "../SearchBox/SearchBox"
 import css from "./App.module.css"
-import { useQuery } from '@tanstack/react-query'
-import { fetchNotes } from '../../services/noteService'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { fetchNotes, type NotesHttpResponse } from '../../services/noteService'
 import Pagination from '../Pagination/Pagination'
 import NoteList from '../NoteList/NoteList'
-import type { Note } from '../../types/note'
 import Modal from '../Modal/Modal'
 import NoteForm from '../NoteForm/NoteForm'
 
-
-
 function App() {
-const {data, isLoading} = useQuery<Note[]>({
-  queryKey: ["notes"],
-  queryFn: fetchNotes,
+
+const [currentPage, setCurrentPage] = useState(1);
+
+const {data, isLoading} = useQuery<NotesHttpResponse>({
+  queryKey: ["notes", currentPage],
+  queryFn: ()=> fetchNotes(currentPage),
+  placeholderData: keepPreviousData
 });
 
-const totalPages = data?.total_pages ?? 0;
+const notes = data?.notes ?? []
+const totalPages = data?.totalPages ?? 0;
 
 const [isModalOpen, setIsModalOpen] = useState(false);
 const openModal = () => setIsModalOpen(true);
@@ -27,10 +29,15 @@ const closeModal = () => setIsModalOpen(false);
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox/>
-        {totalPages>1 && (<Pagination />)}
+        {totalPages>1 && (<Pagination 
+                          totalPages={totalPages}
+                          currentPage={currentPage}
+                          onPageChange={setCurrentPage}
+
+                          />)}
         <button className='css.button' onClick={openModal}>Create note +</button>
       </header>
-      {data && !isLoading && <NoteList notes={data}/>}
+      {data && !isLoading && <NoteList notes={notes}/>}
       {isModalOpen &&(
         <Modal onClose={closeModal}>
           <NoteForm onClose={closeModal} />
