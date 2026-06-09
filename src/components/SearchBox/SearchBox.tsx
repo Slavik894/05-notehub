@@ -7,13 +7,12 @@ interface SearchBoxProps{
 }
 
 export default function SearchBox({onSearch}: SearchBoxProps){
-    const [inputValue, setInputValue] = useState("");
 
-    const handleChange = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {setInputValue(e.target.value); onSearch(e.target.value);}, 300);
+    const handleChange = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {onSearch(e.target.value);}, 300);
 
     return(
         <div>
-            <input type="text" defaultValue={inputValue} onChange={handleChange} className={css.input}/>
+            <input type="text" onChange={handleChange} className={css.input}/>
         </div>
     )
 }

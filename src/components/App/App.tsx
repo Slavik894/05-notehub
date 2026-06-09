@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SearchBox from "../SearchBox/SearchBox"
 import css from "./App.module.css"
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -7,6 +7,7 @@ import Pagination from '../Pagination/Pagination'
 import NoteList from '../NoteList/NoteList'
 import Modal from '../Modal/Modal'
 import NoteForm from '../NoteForm/NoteForm'
+import {FallingLines} from 'react-loader-spinner'
 
 function App() {
 
@@ -18,7 +19,7 @@ const handleSearch = (value: string) =>{
   setCurrentPage(1);
 }
 
-const {data, isLoading} = useQuery<NotesHttpResponse>({
+const {data, isLoading, isSuccess} = useQuery<NotesHttpResponse>({
   queryKey: ["notes", currentPage, searchText],
   queryFn: ()=> fetchNotes(currentPage, searchText),
   placeholderData: keepPreviousData
@@ -43,12 +44,23 @@ const closeModal = () => setIsModalOpen(false);
                           />)}
         <button className={css.button} onClick={openModal}>Create note +</button>
       </header>
+      {isLoading && (
+        <div className={css.loaderWrapper}>
+            <FallingLines 
+              color="#4fa94d" 
+              width="100" 
+              visible={true} 
+              ariaLabel="falling-circles-loading" 
+            />
+          </div>
+)}
       {data && !isLoading && <NoteList notes={notes}/>}
       {isModalOpen &&(
         <Modal onClose={closeModal}>
           <NoteForm onClose={closeModal} />
         </Modal>
       )}
+      {data && !isLoading && notes.length === 0 && (<p>Ooops...there is no such notes</p>)}
     </div>
   )
 }
