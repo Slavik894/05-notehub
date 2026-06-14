@@ -45,7 +45,6 @@ export default function NoteForm({onClose}: NoteFormProps){
     })
 
     const handleSubmit = (values: NoteFormValues) =>{
-        console.log(values);
         mutation.mutate({
             title: values.title,
             content: values.content, 
