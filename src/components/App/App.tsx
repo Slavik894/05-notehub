@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import {useState } from 'react'
 import SearchBox from "../SearchBox/SearchBox"
 import css from "./App.module.css"
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -19,7 +19,7 @@ const handleSearch = (value: string) =>{
   setCurrentPage(1);
 }
 
-const {data, isLoading, isSuccess} = useQuery<NotesHttpResponse>({
+const {data, isLoading} = useQuery<NotesHttpResponse>({
   queryKey: ["notes", currentPage, searchText],
   queryFn: ()=> fetchNotes(currentPage, searchText),
   placeholderData: keepPreviousData
