@@ -8,16 +8,17 @@ import NoteList from '../NoteList/NoteList'
 import Modal from '../Modal/Modal'
 import NoteForm from '../NoteForm/NoteForm'
 import {FallingLines} from 'react-loader-spinner'
+import { useDebouncedCallback } from 'use-debounce'
 
 function App() {
 
 const [currentPage, setCurrentPage] = useState(1);
 const [searchText, setSearchText] = useState("")
 
-const handleSearch = (value: string) =>{
+const handleSearch = useDebouncedCallback((value: string) =>{
   setSearchText(value);
   setCurrentPage(1);
-}
+}, 300);
 
 const {data, isLoading} = useQuery<NotesHttpResponse>({
   queryKey: ["notes", currentPage, searchText],
